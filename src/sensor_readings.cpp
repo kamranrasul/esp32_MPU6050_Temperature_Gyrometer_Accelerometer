@@ -2,6 +2,8 @@
 #include <Wire.h>
 #include "sensor_readings.h"
 
+// ************************** new code **************************
+
 // I2C address of the MPU-6050
 const int MPU_addr = 0x68;
 
@@ -100,3 +102,5 @@ void refresh_readings_mpu6050(TFT_eSPI *tft)
   //digitalWrite(LED_BUILTIN, LOW);
   Serial.println("-----v3----");
 }
+
+// ************************** new code **************************

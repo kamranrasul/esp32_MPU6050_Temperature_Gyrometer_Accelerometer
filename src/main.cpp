@@ -5,10 +5,14 @@
 #include "sensor_readings.h"
 #include "TFT_eSPI.h" // ESP32 Hardware-specific library
 #include "settings.h" // The order is important!
+
+// ************************** new code **************************
 #include <Wire.h>
 
 // I2C address of the MPU-6050
 const int MPU_addr = 0x68;
+
+// ************************** new code **************************
 
 // tft is global to this file only
 TFT_eSPI tft = TFT_eSPI();
@@ -31,12 +35,15 @@ void setup()
   tft.println("Starting MPU-6050 sensor...");
   delay(5000);
 
-  // (you can also pass in a Wire library object like &Wire2)
+  // ************************** new code **************************
+
   Wire.begin();
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x6B); // PWR_MGMT_1 register
   Wire.write(0);    // set to zero (wakes up the MPU-6050)
   Wire.endTransmission(true);
+
+  // ************************** new code **************************
 
   tft.fillScreen(bg);
 }
@@ -49,6 +56,11 @@ void loop()
   // refresh_readings(bme);
   // Passing the bme and tft objects by reference
   //(a pointer: & means pass the address stored in the bme and tft variables).
+
+  // ************************** new code **************************
+
   refresh_readings_mpu6050(&tft);
+
+  // ************************** new code **************************
   delay(2000);
 }
