@@ -1,3 +1,6 @@
+// Original Code By:    Robbin Law
+// Modified for MPU-6050: Kamran R.
+
 #include <Arduino.h>
 #include "sensor_readings.h"
 #include "TFT_eSPI.h" // ESP32 Hardware-specific library
