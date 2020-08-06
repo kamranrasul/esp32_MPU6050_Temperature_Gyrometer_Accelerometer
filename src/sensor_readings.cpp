@@ -37,6 +37,7 @@ void refresh_readings_bme280(Adafruit_BME280 *bme, TFT_eSPI *tft)
   Serial.println(" °C");
   tft->fillRect(5, 50, 140, 30, bg);
   tft->setCursor(5, 50);
+  tft->print(" Temperature: ");
   tft->print(f_temperature);
   tft->println(" °C");
 
@@ -45,6 +46,7 @@ void refresh_readings_bme280(Adafruit_BME280 *bme, TFT_eSPI *tft)
   Serial.println(" %");
   tft->fillRect(5, 90, 130, 30, bg);
   tft->setCursor(5, 90);
+  tft->print(" Humidity:    ");
   tft->print(f_humidity);
   tft->println(" %");
 
@@ -53,6 +55,7 @@ void refresh_readings_bme280(Adafruit_BME280 *bme, TFT_eSPI *tft)
   Serial.println(" hPa");
   tft->fillRect(5, 130, 200, 30, bg);
   tft->setCursor(5, 130);
+  tft->print(" Pressure:    ");
   tft->print(f_pressure);
   tft->println(" hPa");
 
@@ -61,6 +64,7 @@ void refresh_readings_bme280(Adafruit_BME280 *bme, TFT_eSPI *tft)
   Serial.println(" m");
   tft->fillRect(5, 170, 200, 30, bg);
   tft->setCursor(5, 170);
+  tft->print(" Altitude:    ");
   tft->print(f_altitude);
   tft->println(" m");
 
