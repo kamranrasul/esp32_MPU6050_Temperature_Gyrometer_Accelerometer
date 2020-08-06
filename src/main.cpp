@@ -121,12 +121,12 @@ void loop()
   if (foundBME)
   {
     refresh_readings_bme280(&bme, &tft);
+    delay(2000);
   }
-  delay(2000);
   if (foundMPU6050)
   {
     refresh_readings_mpu6050(&tft);
+    delay(2000);
   }
   // ************************** new code **************************
-  delay(2000);
 }
