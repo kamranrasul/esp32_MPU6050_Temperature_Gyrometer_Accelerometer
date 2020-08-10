@@ -22,7 +22,7 @@ void refresh_readings_bme280(Adafruit_BME280 *bme, TFT_eSPI *tft)
   // the -> symbol means to de-reference the pointer.
   tft->setCursor(5, 5);
   tft->setTextColor(fg, bg);
-  tft->loadFont("SansSerif-36");
+  tft->loadFont("NotoSansBold20");
   tft->println("Right now...");
 
   f_temperature = bme->readTemperature();
@@ -88,6 +88,18 @@ float temp;
 // the * means that the parameter called bme will contain an address to the object of type Adafruit_BME280
 void refresh_readings_mpu6050(TFT_eSPI *tft)
 {
+  // If you set this, the TFT will not work!!!
+  //digitalWrite(LED_BUILTIN, HIGH);
+
+  uint16_t bg = TFT_BLACK;
+  uint16_t fg = TFT_WHITE;
+
+  // the -> symbol means to de-reference the pointer.
+  tft->setCursor(5, 5);
+  tft->setTextColor(fg, bg);
+  tft->loadFont("NotoSansBold15");
+  tft->println("Right now...");
+
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x3B); // starting with register 0x3B (ACCEL_XOUT_H)
   Wire.endTransmission(false);
@@ -111,25 +123,18 @@ void refresh_readings_mpu6050(TFT_eSPI *tft)
   Serial.println("Accelerometer Values: \n");
   Serial.print("  AcX: ");
   Serial.println(AcX);
-  Serial.print("\n  AcY: ");
+  Serial.print("  AcY: ");
   Serial.println(AcY);
-  Serial.print("\n  AcZ: ");
+  Serial.print("  AcZ: ");
   Serial.println(AcZ);
 
   Serial.print("\nGyroscope Values: \n");
   Serial.print("  GyX: ");
   Serial.println(GyX);
-  Serial.print("\n  GyY: ");
+  Serial.print("  GyY: ");
   Serial.println(GyY);
-  Serial.print("\n  GyZ: ");
+  Serial.print("  GyZ: ");
   Serial.println(GyZ);
-  Serial.print("\n");
-
-  // If you set this, the TFT will not work!!!
-  //digitalWrite(LED_BUILTIN, HIGH);
-
-  uint16_t bg = TFT_BLACK;
-  uint16_t fg = TFT_WHITE;
 
   // the -> symbol means to de-reference the pointer.
   tft->setCursor(5, 5);
@@ -148,24 +153,24 @@ void refresh_readings_mpu6050(TFT_eSPI *tft)
   tft->fillRect(5, 90, 130, 30, bg);
   tft->setCursor(5, 90);
 
-  tft->println("Accelerometer Values: \n");
+  tft->println("Accelerometer Values:");
   tft->print("  AcX: ");
   tft->println(AcX);
 
-  tft->print("\n  AcY: ");
+  tft->print("  AcY: ");
   tft->println(AcY);
 
-  tft->print("\n  AcZ: ");
+  tft->print("  AcZ: ");
   tft->println(AcZ);
 
-  tft->println("\nGyroscope Values: \n");
+  tft->println("Gyroscope Values:");
   tft->print("  GyX: ");
   tft->println(GyX);
 
-  tft->print("\n  GyY: ");
+  tft->print("  GyY: ");
   tft->println(GyY);
 
-  tft->print("\n  GyZ: ");
+  tft->print("  GyZ: ");
   tft->println(GyZ);
 
   Serial.println("-----v1----");

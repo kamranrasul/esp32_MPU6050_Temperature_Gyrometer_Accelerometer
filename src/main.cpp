@@ -1,37 +1,34 @@
-// Original Code By:    Robbin Law
-// Modified for MPU-6050: Kamran R.
-
 #include <Arduino.h>
 #include "sensor_readings.h"
-#include "TFT_eSPI.h" // ESP32 Hardware-specific library
+#include "SPIFFS.h"
 #include "settings.h" // The order is important!
+#include "bmp_functions.h"
+#include "TaskScheduler.h"
+#include "WiFi.h"
+#include "network_config.h"
+#include <Wire.h>
 
-#include <Wire.h> // for I2C generic devices
-
-#define LED_ONBOARD_PIN 2
+void sensor_readings_update();
+void clock_update();
 
 // bme is global to this file only
 Adafruit_BME280 bme;
 // tft is global to this file only
 TFT_eSPI tft = TFT_eSPI();
+// Setup the clock
+
+Timezone edmontonTZ;
 
 uint16_t bg = TFT_BLACK;
 uint16_t fg = TFT_WHITE;
 
-// LED
-struct Led
-{
-  uint8_t pin;
-  bool on;
+// Setup tasks for the task scheduler
+// The third argument taks a pointer to a function, but cannot have parameters.
+Task t1_bme280(2000, TASK_FOREVER, &sensor_readings_update);
+Task t2_clock(1000, TASK_FOREVER, &clock_update);
 
-  void update()
-  {
-    digitalWrite(pin, on ? HIGH : LOW);
-  }
-};
-
-// Global Variables
-Led onboard_led = {LED_ONBOARD_PIN, false};
+// Create the scheduler
+Scheduler runner;
 
 void initSPIFFS()
 {
@@ -60,12 +57,13 @@ bool foundMPU6050 = false;
 
 void setup()
 {
-  pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600);
+  initSPIFFS();
 
   // Setup the TFT
   tft.begin();
-  tft.setRotation(2);
+  tft.setRotation(3);
+  tft.loadFont("NotoSansBold20");
   tft.setTextColor(fg, bg);
   tft.fillScreen(bg);
   tft.setCursor(0, 0);
@@ -100,23 +98,40 @@ void setup()
     while (1)
       ; // Infinite loop
   }
-
-  delay(2000);
-
   // ************************** new code **************************
 
+  // Connect to Wifi
+  io.connect();
+
+  // Setup the clock
+  waitForSync();
+
+  // setting the time zone
+  edmontonTZ.setLocation("America/Edmonton");
+
+  // Start the task scheduler
+  runner.init();
+
+  // Add the task to the scheduler
+  runner.addTask(t1_bme280);
+  runner.addTask(t2_clock);
+  
+  // Enable the task
+  t1_bme280.enable();
+  t2_clock.enable();
+
   tft.fillScreen(bg);
+  drawBmp("/te.bmp", 160, 198, &tft);
 }
 
 void loop()
 {
-  tft.setCursor(50, 50);
-  tft.println(millis());
-  // passing the bme object by value
-  // refresh_readings(bme);
-  // Passing the bme and tft objects by reference
-  //(a pointer: & means pass the address stored in the bme and tft variables).
+  // Execute the scheduler runner
+  runner.execute();
+}
 
+void sensor_readings_update()
+{
   // ************************** new code **************************
   if (foundBME)
   {
@@ -129,4 +144,9 @@ void loop()
     delay(2000);
   }
   // ************************** new code **************************
+}
+
+void clock_update()
+{
+  refresh_clock(&tft, &edmontonTZ);
 }
