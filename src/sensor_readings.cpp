@@ -120,7 +120,7 @@ void refresh_readings_mpu6050(TFT_eSPI *tft)
   Serial.printf("Temperature: %.2f °C or %.2f °F", temp, (temp * 1.8) + 32);
   Serial.println();
 
-  Serial.println("Accelerometer Values: \n");
+  Serial.println("\nAccelerometer Values:");
   Serial.print("  AcX: ");
   Serial.println(AcX);
   Serial.print("  AcY: ");
@@ -128,7 +128,7 @@ void refresh_readings_mpu6050(TFT_eSPI *tft)
   Serial.print("  AcZ: ");
   Serial.println(AcZ);
 
-  Serial.print("\nGyroscope Values: \n");
+  Serial.print("\nGyroscope Values:");
   Serial.print("  GyX: ");
   Serial.println(GyX);
   Serial.print("  GyY: ");

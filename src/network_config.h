@@ -2,8 +2,8 @@
 
 // visit io.adafruit.com if you need to create an account,
 // or if you need your Adafruit IO key.
-#define IO_USERNAME  "kamranrasul"
-#define IO_KEY       "aio_NAvk79i1OKqv0OFFAUotdxD5bskj"
+#define IO_USERNAME  "<YOUR USERNAME>"
+#define IO_KEY       "<YOUR KEY HERE>"
 
 // wifi credentials
 #define WIFI_SSID       "Hidden_network"
