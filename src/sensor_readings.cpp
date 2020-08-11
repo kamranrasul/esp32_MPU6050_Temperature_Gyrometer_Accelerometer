@@ -94,12 +94,6 @@ void refresh_readings_mpu6050(TFT_eSPI *tft)
   uint16_t bg = TFT_BLACK;
   uint16_t fg = TFT_WHITE;
 
-  // the -> symbol means to de-reference the pointer.
-  tft->setCursor(5, 5);
-  tft->setTextColor(fg, bg);
-  tft->loadFont("NotoSansBold15");
-  tft->println("Right now...");
-
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x3B); // starting with register 0x3B (ACCEL_XOUT_H)
   Wire.endTransmission(false);
@@ -128,7 +122,7 @@ void refresh_readings_mpu6050(TFT_eSPI *tft)
   Serial.print("  AcZ: ");
   Serial.println(AcZ);
 
-  Serial.print("\nGyroscope Values:");
+  Serial.print("\nGyroscope Values:\n");
   Serial.print("  GyX: ");
   Serial.println(GyX);
   Serial.print("  GyY: ");
@@ -139,37 +133,43 @@ void refresh_readings_mpu6050(TFT_eSPI *tft)
   // the -> symbol means to de-reference the pointer.
   tft->setCursor(5, 5);
   tft->setTextColor(fg, bg);
+  tft->loadFont("NotoSansBold14");
   tft->println("Right now...");
-
   tft->setTextColor(TFT_YELLOW, bg);
 
   // Temperature
-  tft->fillRect(5, 50, 140, 30, bg);
+  tft->fillRect(5, 50, 200, 30, bg);
   tft->setCursor(5, 50);
   tft->print(temp);
   tft->println(" degree C");
 
   // Accelerometer and Gyroscope
-  tft->fillRect(5, 90, 130, 30, bg);
+  tft->fillRect(5, 90, 200, 30, bg);
   tft->setCursor(5, 90);
 
   tft->println("Accelerometer Values:");
+  tft->fillRect(5, 120, 200, 30, bg);
   tft->print("  AcX: ");
   tft->println(AcX);
 
+  tft->fillRect(5, 160, 200, 30, bg);
   tft->print("  AcY: ");
   tft->println(AcY);
 
+  tft->fillRect(5, 190, 200, 30, bg);
   tft->print("  AcZ: ");
   tft->println(AcZ);
 
+  tft->fillRect(5, 220, 200, 30, bg);
   tft->println("Gyroscope Values:");
   tft->print("  GyX: ");
   tft->println(GyX);
 
+  tft->fillRect(5, 250, 200, 30, bg);
   tft->print("  GyY: ");
   tft->println(GyY);
 
+  tft->fillRect(5, 280, 200, 200, bg);
   tft->print("  GyZ: ");
   tft->println(GyZ);
 
