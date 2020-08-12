@@ -1,12 +1,18 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "sensor_readings.h"
+#include "AdafruitIO_Feed.h"
 
 // Passing the bme and tft objects by reference
 // the * means that the parameter called bme will contain an address to the object of type Adafruit_BME280
 // For those students using the MCU-6050 this code inside "refresh_readings"
 // will be completely different than for the Adafruit_BME280.
-void refresh_readings_bme280(Adafruit_BME280 *bme, TFT_eSPI *tft)
+void refresh_readings_bme280(Adafruit_BME280 *bme,
+                             TFT_eSPI *tft,
+                             AdafruitIO_Feed *temp,
+                             AdafruitIO_Feed *hum,
+                             AdafruitIO_Feed *bar,
+                             AdafruitIO_Feed *alt)
 {
   float f_temperature;
   float f_humidity;
@@ -22,7 +28,8 @@ void refresh_readings_bme280(Adafruit_BME280 *bme, TFT_eSPI *tft)
   // the -> symbol means to de-reference the pointer.
   tft->setCursor(5, 5);
   tft->setTextColor(fg, bg);
-  tft->loadFont("NotoSansBold20");
+  // Create TTF fonts using instructions at https://pages.uoregon.edu/park/Processing/process5.html
+  tft->loadFont("SansSerif-36");
   tft->println("Right now...");
 
   f_temperature = bme->readTemperature();
@@ -68,6 +75,12 @@ void refresh_readings_bme280(Adafruit_BME280 *bme, TFT_eSPI *tft)
   tft->print(f_altitude);
   tft->println(" m");
 
+  // Send data to Adafruit.IO
+  temp->save(f_temperature);
+  hum->save(f_humidity);
+  bar->save(f_pressure);
+  alt->save(f_altitude);
+
   //digitalWrite(LED_BUILTIN, LOW);
   Serial.println("-----v3----");
 }
@@ -86,7 +99,14 @@ float temp;
 
 // Passing the bme and tft objects by reference
 // the * means that the parameter called bme will contain an address to the object of type Adafruit_BME280
-void refresh_readings_mpu6050(TFT_eSPI *tft)
+void refresh_readings_mpu6050(TFT_eSPI *tft,
+                              AdafruitIO_Feed *temper,
+                              AdafruitIO_Feed *acx,
+                              AdafruitIO_Feed *acy,
+                              AdafruitIO_Feed *acz,
+                              AdafruitIO_Feed *gyx,
+                              AdafruitIO_Feed *gyy,
+                              AdafruitIO_Feed *gyz)
 {
   // If you set this, the TFT will not work!!!
   //digitalWrite(LED_BUILTIN, HIGH);
@@ -172,6 +192,15 @@ void refresh_readings_mpu6050(TFT_eSPI *tft)
   tft->fillRect(5, 280, 200, 200, bg);
   tft->print("  GyZ: ");
   tft->println(GyZ);
+
+  //Send data to Adafruit.IO
+  temper->save(temp);
+  acx->save(AcX);
+  acy->save(AcY);
+  acz->save(AcZ);
+  gyx->save(GyX);
+  gyy->save(GyY);
+  gyz->save(GyZ);
 
   Serial.println("-----v1----");
 }

@@ -7,6 +7,7 @@
 #include "WiFi.h"
 #include "network_config.h"
 #include <Wire.h>
+#include "AdafruitIO_Feed.h"
 
 void sensor_readings_update();
 void clock_update();
@@ -24,11 +25,28 @@ uint16_t fg = TFT_WHITE;
 
 // Setup tasks for the task scheduler
 // The third argument taks a pointer to a function, but cannot have parameters.
-Task t1_bme280(2000, TASK_FOREVER, &sensor_readings_update);
+Task t1_bme280(10000, TASK_FOREVER, &sensor_readings_update);
 Task t2_clock(1000, TASK_FOREVER, &clock_update);
 
 // Create the scheduler
 Scheduler runner;
+
+// ************************** new code **************************
+
+// Adafruit.IO feeds
+// Avoid underscores in the feed names, they cause problems with groupings.
+AdafruitIO_Feed *temperature = io.feed("lab-environment.temperature"); //common
+AdafruitIO_Feed *humidity = io.feed("lab-environment.humidity");
+AdafruitIO_Feed *barpressure = io.feed("lab-environment.barpressure");
+AdafruitIO_Feed *altitude = io.feed("lab-environment.altitude");
+AdafruitIO_Feed *acx = io.feed("lab-environment.acx");
+AdafruitIO_Feed *acy = io.feed("lab-environment.acy");
+AdafruitIO_Feed *acz = io.feed("lab-environment.acz");
+AdafruitIO_Feed *gyx = io.feed("lab-environment.gyx");
+AdafruitIO_Feed *gyy = io.feed("lab-environment.gyy");
+AdafruitIO_Feed *gyz = io.feed("lab-environment.gyz");
+
+// ************************** new code **************************
 
 void initSPIFFS()
 {
@@ -103,6 +121,15 @@ void setup()
   // Connect to Wifi
   io.connect();
 
+  // Connect to Wifi
+  io.connect();
+  // wait for a connection
+  while (io.status() < AIO_CONNECTED)
+  {
+    Serial.print(".");
+    delay(500);
+  }
+
   // Setup the clock
   waitForSync();
 
@@ -115,7 +142,7 @@ void setup()
   // Add the task to the scheduler
   runner.addTask(t1_bme280);
   runner.addTask(t2_clock);
-  
+
   // Enable the task
   t1_bme280.enable();
   t2_clock.enable();
@@ -128,6 +155,10 @@ void loop()
 {
   // Execute the scheduler runner
   runner.execute();
+  // Update the MQTT queue and stay connected to Adafruit IO
+  io.run();
+  // Update the clock
+  //events();
 }
 
 void sensor_readings_update()
@@ -135,11 +166,23 @@ void sensor_readings_update()
   // ************************** new code **************************
   if (foundBME)
   {
-    refresh_readings_bme280(&bme, &tft);
+    refresh_readings_bme280(&bme,
+                            &tft,
+                            temperature,
+                            humidity,
+                            barpressure,
+                            altitude);
   }
   if (foundMPU6050)
   {
-    refresh_readings_mpu6050(&tft);
+    refresh_readings_mpu6050(&tft,
+                             temperature,
+                             acx,
+                             acy,
+                             acz,
+                             gyx,
+                             gyy,
+                             gyz);
   }
   // ************************** new code **************************
 }
