@@ -29,7 +29,7 @@ void refresh_readings_bme280(Adafruit_BME280 *bme,
   tft->setCursor(5, 5);
   tft->setTextColor(fg, bg);
   // Create TTF fonts using instructions at https://pages.uoregon.edu/park/Processing/process5.html
-  tft->loadFont("SansSerif-36");
+  tft->loadFont("NotoSansBold20");
   tft->println("Right now...");
 
   f_temperature = bme->readTemperature();
@@ -42,7 +42,7 @@ void refresh_readings_bme280(Adafruit_BME280 *bme,
   // Temperature
   Serial.print(f_temperature);
   Serial.println(" °C");
-  tft->fillRect(5, 50, 140, 30, bg);
+  tft->fillRect(5, 50, 200, 30, bg);
   tft->setCursor(5, 50);
   tft->print(" Temperature: ");
   tft->print(f_temperature);
@@ -51,7 +51,7 @@ void refresh_readings_bme280(Adafruit_BME280 *bme,
   // Humidity
   Serial.print(f_humidity);
   Serial.println(" %");
-  tft->fillRect(5, 90, 130, 30, bg);
+  tft->fillRect(5, 90, 200, 30, bg);
   tft->setCursor(5, 90);
   tft->print(" Humidity:    ");
   tft->print(f_humidity);
