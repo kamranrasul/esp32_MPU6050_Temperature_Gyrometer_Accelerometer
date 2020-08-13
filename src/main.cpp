@@ -8,6 +8,8 @@
 #include "network_config.h"
 #include <Wire.h>
 #include "AdafruitIO_Feed.h"
+#include "aux_functions.h"
+#include "clock.h"
 
 void sensor_readings_update();
 void clock_update();
@@ -76,6 +78,16 @@ bool foundMPU6050 = false;
 void setup()
 {
   Serial.begin(9600);
+  // Setup the EEPROM where we'll write and read the max number of Posts
+  EEPROM.begin(EEPROM_SIZE);
+  //EEPROM.write(0,99);
+  if (EEPROM.readInt(0) < 0)
+  {
+    // If the value stored in EEPROM is negative, then initialise to zero
+    //EEPROM.writeInt(0, 0);
+    EEPROM.writeInt(0, 0);
+    EEPROM.commit();
+  }
   initSPIFFS();
 
   // Setup the TFT
@@ -119,7 +131,9 @@ void setup()
   // ************************** new code **************************
 
   // Connect to Wifi
+  wifiStatus(&tft, &io);
   io.connect();
+  wifiStatus(&tft, &io);
   // wait for a connection
   while (io.status() < AIO_CONNECTED)
   {
@@ -182,6 +196,8 @@ void sensor_readings_update()
                              gyz);
   }
   // ************************** new code **************************
+  // Check the Wifi status
+  wifiStatus(&tft, &io);
 }
 
 void clock_update()

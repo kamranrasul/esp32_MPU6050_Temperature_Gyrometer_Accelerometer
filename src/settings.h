@@ -1,17 +1,28 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
-#define LED_BUILTIN 2 // This is valid for my devkit
-#include <TFT_eSPI.h> // ESP32 Hardware-specific library
-#include "ezTime.h"   // The time and date library
-//#include "aux_functions.h"      // Helpful functions
-#include "clock.h"
+#include "Arduino.h"
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+#include "SPIFFS.h"
+#include "FS.h"
+#include <TFT_eSPI.h>
+#include "AdafruitIO_WiFi.h"
+#include "ezTime.h"
+#include "AdafruitIO_Feed.h"
 #include "EEPROM.h"
-#include "esp_system.h" // To implement the watchdog
+//#include "aux_functions.h"      // Helpful functions
+//#include "EEPROM.h"
+//#include "esp_system.h"  // To implement the watchdog
 //#include "mqtt_controller.h"
 // uint16_t bg = TFT_BLACK;
 // uint16_t fg = TFT_WHITE;
-#define LED_PIN 17
-#define IFTTT_PIN 16
+//#define LED_PIN            17
+//#define IFTTT_PIN          16
+#define EEPROM_SIZE 4
+// We'll use 1 byte in the EEPROM to store the max number of POSTs
+// MQTT posts where completed in the current power cycle
+//#define EEPROM_SIZE 1
+
 #endif
 
 #ifdef DEBUGLOG
